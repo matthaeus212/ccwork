@@ -87,12 +87,12 @@ ccwork/
 
 ### 파일명
 
-| 종류 | 규칙 | 예시 |
-|------|------|------|
-| 컴포넌트 | PascalCase.tsx | `NoteEditor.tsx` |
-| Context | PascalCase + Context 접미사, .tsx | `NotesContext.tsx` |
-| API 모듈 | camelCase.ts | `notes.ts` |
-| 타입 정의 | lowercase.ts | `note.ts` |
+| 종류      | 규칙                              | 예시               |
+| --------- | --------------------------------- | ------------------ |
+| 컴포넌트  | PascalCase.tsx                    | `NoteEditor.tsx`   |
+| Context   | PascalCase + Context 접미사, .tsx | `NotesContext.tsx` |
+| API 모듈  | camelCase.ts                      | `notes.ts`         |
+| 타입 정의 | lowercase.ts                      | `note.ts`          |
 
 ### 함수 / 변수
 
@@ -113,10 +113,10 @@ ccwork/
 
 현재 코드베이스에서 위 규칙과 어긋난 부분.
 
-| 파일 | 위반 규칙 | 위치 |
-|------|-----------|------|
+| 파일                          | 위반 규칙                                                    | 위치           |
+| ----------------------------- | ------------------------------------------------------------ | -------------- |
 | `src/components/NoteItem.tsx` | 이벤트 핸들러 `handle` 접두사 누락 — 인라인 화살표 함수 사용 | line 13, 25-28 |
-| `src/test-setup.ts` | 파일명 kebab-case — camelCase여야 함 (`testSetup.ts`) | 파일명 |
+| `src/test-setup.ts`           | 파일명 kebab-case — camelCase여야 함 (`testSetup.ts`)        | 파일명         |
 
 ### NoteItem.tsx 상세
 
@@ -146,16 +146,16 @@ const handleDelete = (e: React.MouseEvent) => { e.stopPropagation(); onDelete(no
 
 ```ts
 // 목록 조회 — 반환 타입 명시
-export async function fetchNotes(): Promise<Note[]>
+export async function fetchNotes(): Promise<Note[]>;
 
 // 생성 — id/타임스탬프는 Omit으로 제외
-export async function createNote(note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>): Promise<Note>
+export async function createNote(note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>): Promise<Note>;
 
 // 수정 — Partial로 부분 업데이트
-export async function updateNote(id: string, updates: Partial<Note>): Promise<Note>
+export async function updateNote(id: string, updates: Partial<Note>): Promise<Note>;
 
 // 삭제 — 반환값 없음
-export async function deleteNote(id: string): Promise<void>
+export async function deleteNote(id: string): Promise<void>;
 ```
 
 ### Context → 컴포넌트 연결 패턴
@@ -171,3 +171,82 @@ useNotes() 훅으로 컴포넌트에 노출
 - Context 메서드(`addNote`, `editNote`, `removeNote`)는 API 호출 + 로컬 상태 갱신을 함께 처리.
 - 컴포넌트는 Context 메서드만 호출하고, 상태 변경 로직에 관여하지 않는다.
 - API 에러는 Context 밖(컴포넌트 핸들러)에서 `alert` 또는 에러 상태로 처리.
+
+## 커밋 메시지 규칙 (Conventional Commits)
+
+### 형식
+
+```
+<type>[(<scope>)]: <제목>
+
+[본문 — 선택]
+
+[푸터 — 선택]
+```
+
+- **제목**: 명령형으로 작성, 마침표 없음, 72자 이내
+- **언어**: 한국어 사용 (이 프로젝트 기준)
+- **본문**: 무엇을 왜 변경했는지 서술. 줄바꿈 후 작성
+- **푸터**: `BREAKING CHANGE:` 또는 이슈 참조 (`Closes #123`)
+
+### 타입
+
+| 타입       | 사용 시점                               | 예시                                     |
+| ---------- | --------------------------------------- | ---------------------------------------- |
+| `feat`     | 새로운 기능 추가                        | `feat: 노트 검색 기능 추가`              |
+| `fix`      | 버그 수정                               | `fix: ESM/CJS 충돌 빌드 오류 해결`       |
+| `refactor` | 기능·버그 변경 없는 코드 구조 개선      | `refactor: 네이밍 패턴 위반 수정`        |
+| `style`    | 포맷·공백 등 코드 의미에 영향 없는 변경 | `style: prettier 포맷 정리`              |
+| `docs`     | 문서만 변경                             | `docs: CLAUDE.md 아키텍처 섹션 추가`     |
+| `test`     | 테스트 추가·수정                        | `test: NoteEditor 저장 동작 테스트 추가` |
+| `chore`    | 빌드·개발 도구·설정 변경                | `chore: husky + lint-staged 설정 추가`   |
+| `perf`     | 성능 개선                               | `perf: 노트 목록 렌더링 메모이제이션`    |
+| `ci`       | CI/CD 파이프라인 변경                   | `ci: GitHub Actions 워크플로 추가`       |
+
+### 스코프 (선택)
+
+타입 뒤 괄호에 변경 범위를 명시한다.
+
+| 스코프       | 대상                                          |
+| ------------ | --------------------------------------------- |
+| `api`        | `src/api/`                                    |
+| `context`    | `src/context/`                                |
+| `components` | `src/components/`                             |
+| `types`      | `src/types/`                                  |
+| `config`     | `vite.config.ts`, `package.json` 등 설정 파일 |
+
+### 작성 예시
+
+```
+# 기본
+feat: 노트 태그 필터 기능 추가
+
+# 스코프 포함
+feat(api): 태그 기준 노트 조회 API 추가
+fix(components): NoteEditor 저장 후 폼 초기화 안 되는 버그 수정
+
+# 본문 포함
+refactor(context): NotesContext에서 useNotes 훅 분리
+
+Fast Refresh 경고 해소 및 단일 책임 원칙 적용.
+NotesContext.tsx → 상태/Provider, hooks/useNotes.ts → 훅으로 분리.
+
+# Breaking Change
+feat(types)!: Note 타입에 tags 필드 추가
+
+BREAKING CHANGE: 기존 db.json 데이터에 tags 배열 마이그레이션 필요.
+```
+
+### 금지 패턴
+
+```
+# 타입 없음
+노트 삭제 버그 수정
+
+# 과거형
+fixed a bug
+
+# 모호한 제목
+feat: 수정
+chore: 업데이트
+```
