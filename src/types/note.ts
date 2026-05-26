@@ -6,3 +6,4 @@ export interface Note {
   updatedAt: string;
   // ❌ tags 필드는 아직 없음 — 강의에서 추가할 것
 }
+// commitlint test
