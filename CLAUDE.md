@@ -250,3 +250,56 @@ fixed a bug
 feat: 수정
 chore: 업데이트
 ```
+
+## commitlint 설정
+
+커밋 메시지 규칙을 `commit-msg` 훅에서 자동 검사한다. 규칙 위반 시 커밋이 차단된다.
+
+### 관련 파일
+
+| 파일                   | 역할                            |
+| ---------------------- | ------------------------------- |
+| `commitlint.config.js` | commitlint 규칙 설정            |
+| `.husky/commit-msg`    | 커밋 시 commitlint 자동 실행 훅 |
+
+### commitlint.config.js
+
+```js
+export default {
+  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'subject-case': [0], // 한국어 커밋 메시지 허용을 위해 비활성화
+  },
+};
+```
+
+- `@commitlint/config-conventional` 기반으로 Conventional Commits 규칙 전체 적용
+- `subject-case` 규칙만 비활성화 — 기본값은 영문 소문자 강제이나 이 프로젝트는 한국어 사용
+
+### .husky/commit-msg
+
+```bash
+npx --no -- commitlint --edit $1
+```
+
+### 커밋 훅 실행 순서
+
+```
+git commit
+  └─ pre-commit     → lint-staged (ESLint + Prettier)
+  └─ commit-msg     → commitlint (메시지 형식 검사)
+```
+
+### 동작 예시
+
+```bash
+# 차단 — type 누락
+$ git commit -m "노트 검색 버그 수정"
+✖ subject may not be empty [subject-empty]
+✖ type may not be empty [type-empty]
+husky - commit-msg script failed (code 1)
+
+# 통과
+$ git commit -m "fix: 노트 검색 버그 수정"
+[main abc1234] fix: 노트 검색 버그 수정
+```
