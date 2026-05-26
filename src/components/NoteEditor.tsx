@@ -54,9 +54,7 @@ export function NoteEditor({ selectedNoteId, isCreating, onDone }: NoteEditorPro
       <div className="flex items-center justify-center h-full">
         <div className="text-center space-y-3">
           <p className="text-5xl">📝</p>
-          <p className="text-muted-foreground text-sm">
-            노트를 선택하거나 새 노트를 만드세요
-          </p>
+          <p className="text-muted-foreground text-sm">노트를 선택하거나 새 노트를 만드세요</p>
         </div>
       </div>
     );
